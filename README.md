@@ -6,8 +6,9 @@ Team: Saadia, Zakraya, Umaiza.
 ## Start here
 1. [SignBridge-Build-Guide.md](SignBridge-Build-Guide.md): plan, features, timeline, who does what
 2. [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md): system design and THE feature contract (read before coding)
-3. [docs/TEAM-WORKFLOW.md](docs/TEAM-WORKFLOW.md): Git branches, setup, checklist
-4. [CLAUDE.md](CLAUDE.md): rules for AI coding tools (Claude Code / Cursor)
+3. [docs/FEATURES.md](docs/FEATURES.md): every feature in detail, owner, status
+4. [docs/TEAM-WORKFLOW.md](docs/TEAM-WORKFLOW.md): Git branches, setup, checklist
+5. [CLAUDE.md](CLAUDE.md): rules for AI coding tools (Claude Code / Cursor)
 
 ## Folders
 - `ml/`: `record.py` (record signs), `train.py` (train + export ONNX), `features.py` (contract)
