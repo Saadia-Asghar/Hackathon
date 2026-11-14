@@ -22,7 +22,7 @@ Every feature must work offline (degraded) — see `docs/ARCHITECTURE.md`.
 ### A4. AI sentence builder ✅ [Saadia]
 - `POST /api/sentence {gloss[], language}` → Azure OpenAI, one sentence, no invented facts. Offline: rules. Later: Phi-4-mini in browser.
 
-### A5. Multilingual output 🟡 API done, UI todo [Zakraya]
+### A5. Multilingual output ✅ (voice picker in SignToText, /api/translate + /api/tts, offline browser voice) [Zakraya]
 - `POST /api/translate {text, to}` → Azure AI Translator. `POST /api/tts` → Azure AI Speech; offline → SpeechSynthesis.
 
 ## B. Learning
@@ -40,20 +40,20 @@ Every feature must work offline (degraded) — see `docs/ARCHITECTURE.md`.
 ### C1. Contribute `/contribute` ✅ starter [Umaiza]
 - Pick sign → record 30-frame landmark clip (no video) → consent required → offline queue → `POST /api/contribute` when online.
 
-### C2. Validate `/validate` ⬜ [Umaiza]
+### C2. Validate `/validate` ✅ local skeleton replay; Blob sync todo [Umaiza]
 - Deaf validators replay skeleton animation, approve/reject; approved clips → Azure ML retraining; contributor points.
 
 ### C3. SOS `/sos` ✅ [Umaiza]
 - Big preset phrases → full-screen text + spoken aloud. Location only when tapped. 100% offline.
 
-### C4. Document → Sign `/document` 🟡 API `/api/ocr` done, page todo [Umaiza]
+### C4. Document → Sign `/document` ✅ [Umaiza]
 - Photo → `/api/ocr` (Azure AI Vision) → plain-language summary → A2 plays signs.
 
 ## D. Business (Imagine Cup)
 | ID | Feature | Owner | Status |
 |---|---|---|---|
 | D1 | `/kiosk?org=Name&lang=psl` counter mode, auto-reset 60 s | Umaiza | ✅ |
-| D2 | `/org` dashboard + compliance PDF (Cosmos DB) | Umaiza | ⬜ |
+| D2 | `/org` dashboard: tiles, 7-day chart, CSV, print-to-PDF (local; Cosmos DB todo) | Umaiza | ✅ |
 | D3 | Microsoft Teams side-panel app (Teams Toolkit) | Saadia | ⬜ |
 | D4 | Developer API: keys, metering, `/api/v1/recognize` (landmarks only) | Saadia | ⬜ |
 | D5 | `/pricing` page (payments later, Stripe test mode) | Zakraya | ✅ |
@@ -63,6 +63,6 @@ Every feature must work offline (degraded) — see `docs/ARCHITECTURE.md`.
 |---|---|---|---|
 | E1 | PWA: `public/sw.js` + manifest (production only) | Zakraya | ✅ |
 | E2 | Login (Microsoft Entra External ID) | Umaiza | ⬜ |
-| E3 | Azure deploy (Static Web Apps + Functions) | Saadia | ⬜ |
+| E3 | Azure deploy: `.github/workflows/azure-static-web-apps.yml` (needs secret) | Saadia | 🟡 |
 | E4 | Azure ML retraining pipeline | Umaiza | ⬜ |
 | E5 | Responsible AI page `/about` | all | ✅ |

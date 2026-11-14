@@ -11,7 +11,7 @@ export const metadata = {
 
 const NAV = [
   ["/", "Home"], ["/translate", "Translate"], ["/conversation", "Conversation"], ["/speak", "Speak"],
-  ["/learn", "Learn"], ["/dictionary", "Dictionary"], ["/sos", "SOS"], ["/about", "About"],
+  ["/learn", "Learn"], ["/dictionary", "Dictionary"], ["/document", "Document"], ["/sos", "SOS"], ["/org", "Dashboard"], ["/about", "About"],
 ];
 
 export default function RootLayout({ children }: { children: ReactNode }) {

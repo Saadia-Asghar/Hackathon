@@ -2,6 +2,7 @@
 // C3: SOS - works 100% offline.
 import { useState } from "react";
 import { speak } from "@/lib/sentence";
+import { logUsage } from "@/lib/usage";
 
 const PHRASES = [
   "I am deaf. Please write or type to me.",
@@ -16,7 +17,7 @@ export default function SosPage() {
   const [shown, setShown] = useState<string | null>(null);
   const [loc, setLoc] = useState("");
 
-  function show(p: string) { setShown(p); speak(p); }
+  function show(p: string) { setShown(p); speak(p); logUsage("sos"); }
   function shareLocation() {
     if (!navigator.geolocation) { setLoc("Location not available"); return; }
     navigator.geolocation.getCurrentPosition(

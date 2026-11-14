@@ -10,6 +10,9 @@ const PAGES = [
   ["/conversation", "Conversation", "Deaf and hearing person, one screen"],
   ["/kiosk", "Kiosk", "Counter mode for banks and clinics"],
   ["/pricing", "Pricing", "Plans for organisations"],
+  ["/document", "Document", "Photo of a letter to simple words and signs"],
+  ["/validate", "Validate", "Review community recordings"],
+  ["/org", "Dashboard", "Usage and compliance for organisations"],
 ];
 
 export default function Home() {

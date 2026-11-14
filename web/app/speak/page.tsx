@@ -22,6 +22,10 @@ export default function SpeakPage() {
   const [missing, setMissing] = useState(false);
 
   useEffect(() => { loadSigns(lang).then(setSigns); }, [lang]);
+  useEffect(() => {
+    const t = new URLSearchParams(window.location.search).get("text");
+    if (t) setText(t);
+  }, []);
 
   function play() {
     const clips: Clip[] = [];
