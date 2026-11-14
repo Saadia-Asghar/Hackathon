@@ -7,6 +7,9 @@ const PAGES = [
   ["/dictionary", "Dictionary", "Search any sign"],
   ["/contribute", "Contribute", "Help build the dataset"],
   ["/sos", "SOS", "Emergency phrases, works offline"],
+  ["/conversation", "Conversation", "Deaf and hearing person, one screen"],
+  ["/kiosk", "Kiosk", "Counter mode for banks and clinics"],
+  ["/pricing", "Pricing", "Plans for organisations"],
 ];
 
 export default function Home() {

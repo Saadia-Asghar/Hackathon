@@ -1,6 +1,6 @@
 # SignBridge — Detailed Feature Specs
 
-Status: ✅ built (starter) · ⬜ not started. Owner in brackets.
+Status: ✅ built (starter) · 🟡 partly built · ⬜ not started. Owner in brackets.
 Every feature must work offline (degraded) — see `docs/ARCHITECTURE.md`.
 
 ## A. Core translation
@@ -16,13 +16,13 @@ Every feature must work offline (degraded) — see `docs/ARCHITECTURE.md`.
 - Known words play `public/signs/<lang>/<word>.mp4`; unknown words fingerspelled from `public/signs/<lang>/letters/<a-z>.mp4`, else shown as text.
 - Done when: 30 sign videos + 26 letters per language. Later: 3D avatar, Whisper offline, Azure Speech online.
 
-### A3. Conversation mode `/conversation` ⬜ [Saadia]
+### A3. Conversation mode `/conversation` ✅ [Saadia]
 - Split screen: deaf user (A1) top, hearing user (A2 + captions) bottom. Big text, high contrast.
 
 ### A4. AI sentence builder ✅ [Saadia]
 - `POST /api/sentence {gloss[], language}` → Azure OpenAI, one sentence, no invented facts. Offline: rules. Later: Phi-4-mini in browser.
 
-### A5. Multilingual output ⬜ [Zakraya]
+### A5. Multilingual output 🟡 API done, UI todo [Zakraya]
 - `POST /api/translate {text, to}` → Azure AI Translator. `POST /api/tts` → Azure AI Speech; offline → SpeechSynthesis.
 
 ## B. Learning
@@ -46,23 +46,23 @@ Every feature must work offline (degraded) — see `docs/ARCHITECTURE.md`.
 ### C3. SOS `/sos` ✅ [Umaiza]
 - Big preset phrases → full-screen text + spoken aloud. Location only when tapped. 100% offline.
 
-### C4. Document → Sign `/document` ⬜ [Umaiza]
+### C4. Document → Sign `/document` 🟡 API `/api/ocr` done, page todo [Umaiza]
 - Photo → `/api/ocr` (Azure AI Vision) → plain-language summary → A2 plays signs.
 
 ## D. Business (Imagine Cup)
 | ID | Feature | Owner | Status |
 |---|---|---|---|
-| D1 | `/kiosk` locked counter mode, auto-reset 60 s | Umaiza | ⬜ |
+| D1 | `/kiosk?org=Name&lang=psl` counter mode, auto-reset 60 s | Umaiza | ✅ |
 | D2 | `/org` dashboard + compliance PDF (Cosmos DB) | Umaiza | ⬜ |
 | D3 | Microsoft Teams side-panel app (Teams Toolkit) | Saadia | ⬜ |
 | D4 | Developer API: keys, metering, `/api/v1/recognize` (landmarks only) | Saadia | ⬜ |
-| D5 | `/pricing`: Free · Learner Pro · Business · Enterprise (Stripe test mode) | Zakraya | ⬜ |
+| D5 | `/pricing` page (payments later, Stripe test mode) | Zakraya | ✅ |
 
 ## E. Platform
 | ID | Feature | Owner | Status |
 |---|---|---|---|
-| E1 | PWA install + service worker caching models/videos | Zakraya | ⬜ |
+| E1 | PWA: `public/sw.js` + manifest (production only) | Zakraya | ✅ |
 | E2 | Login (Microsoft Entra External ID) | Umaiza | ⬜ |
 | E3 | Azure deploy (Static Web Apps + Functions) | Saadia | ⬜ |
 | E4 | Azure ML retraining pipeline | Umaiza | ⬜ |
-| E5 | Responsible AI page `/about` | all | ⬜ |
+| E5 | Responsible AI page `/about` | all | ✅ |

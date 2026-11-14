@@ -6,6 +6,12 @@
     "AZURE_OPENAI_ENDPOINT": "https://YOUR-RESOURCE.openai.azure.com/",
     "AZURE_OPENAI_KEY": "put-key-here-never-commit",
     "AZURE_OPENAI_DEPLOYMENT": "gpt-4o-mini",
-    "AZURE_OPENAI_API_VERSION": "2024-10-21"
+    "AZURE_OPENAI_API_VERSION": "2024-10-21",
+    "AZURE_TRANSLATOR_KEY": "put-key-here-never-commit",
+    "AZURE_TRANSLATOR_REGION": "southeastasia",
+    "AZURE_SPEECH_KEY": "put-key-here-never-commit",
+    "AZURE_SPEECH_REGION": "southeastasia",
+    "AZURE_VISION_ENDPOINT": "https://YOUR-VISION.cognitiveservices.azure.com/",
+    "AZURE_VISION_KEY": "put-key-here-never-commit"
   }
 }
