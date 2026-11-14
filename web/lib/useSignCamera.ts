@@ -19,12 +19,21 @@ export function useSignCamera(lang: Lang, opts: { predict: boolean }) {
       try {
         const lm = await createLandmarkers();
         const model = predict ? await SignModel.load(lang).catch(() => null) : null;
-        if (predict && !model) setStatus(`No ${lang} model yet. Train it with ml/train.py`);
-        stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } });
+        const noModel = predict && !model ? `No ${lang.toUpperCase()} model yet (train it with ml/train.py). ` : "";
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } });
+        } catch (camErr) {
+          const name = camErr instanceof DOMException ? camErr.name : "";
+          setStatus(noModel + (name === "NotAllowedError"
+            ? "Camera blocked. Allow camera access in your browser settings, then reload."
+            : name === "NotFoundError" ? "No camera found on this device." : "Could not start the camera."));
+          return;
+        }
+        if (stop) { stream.getTracks().forEach((t) => t.stop()); return; }
         const video = videoRef.current!;
         video.srcObject = stream;
         await video.play();
-        if (!predict || model) setStatus("Ready");
+        setStatus(noModel || "Ready");
         let n = 0;
         let lastTs = -1;
         const loop = async () => {
