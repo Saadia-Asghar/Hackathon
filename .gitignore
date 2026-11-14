@@ -19,3 +19,5 @@ api/local.settings.json
 
 .DS_Store
 Thumbs.db
+web/public/mediapipe/
+web/public/ort/
