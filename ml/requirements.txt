@@ -3,3 +3,4 @@ opencv-python>=4.9
 numpy>=1.26,<2.3
 torch>=2.2
 onnx>=1.16
+azure-storage-blob>=12.19

@@ -4,11 +4,21 @@ from __future__ import annotations
 import json
 import os
 
+import logging
+import re
+import uuid
+from pathlib import Path
 from xml.sax.saxutils import escape
 
 import azure.functions as func
+import numpy as np
+import onnxruntime as ort
 import requests
+from azure.storage.blob import BlobServiceClient
 from openai import AzureOpenAI
+
+LANGS = {"psl", "sgsl", "asl"}
+SAFE_NAME = re.compile(r"[a-z0-9_]{1,40}")
 
 app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
 
@@ -155,7 +165,7 @@ def ocr(req: func.HttpRequest) -> func.HttpResponse:
 
 @app.route(route="contribute", methods=["POST"])
 def contribute(req: func.HttpRequest) -> func.HttpResponse:
-    """Stub for Umaiza: validate a landmark clip [30][177] + consent, then save to Blob Storage."""
+    """C1: validate a landmark clip [30][177] + consent, then save to Blob container "contributions"."""
     try:
         data = req.get_json()
     except ValueError:
@@ -165,5 +175,53 @@ def contribute(req: func.HttpRequest) -> func.HttpResponse:
         return _json({"error": "consent required"}, 400)
     if not (isinstance(clip, list) and len(clip) == 30 and all(isinstance(f, list) and len(f) == 177 for f in clip)):
         return _json({"error": "clip must be 30 x 177 numbers"}, 400)
-    # TODO(Umaiza): upload to Azure Blob Storage container "contributions"
-    return _json({"ok": True, "stored": False, "note": "storage not wired yet"})
+    lang = str(data.get("lang", ""))
+    label = str(data.get("label", ""))
+    if lang not in LANGS or not SAFE_NAME.fullmatch(label):
+        return _json({"error": "bad lang or label"}, 400)
+    conn = os.environ.get("AZURE_STORAGE_CONNECTION_STRING")
+    if not conn:
+        return _json({"ok": True, "stored": False, "note": "storage not configured"})
+    blob_name = f"{lang}/{label}/{uuid.uuid4().hex}.json"
+    record = {"lang": lang, "label": label, "clip": clip, "consent": True, "at": str(data.get("at", ""))[:40], "status": "pending"}
+    BlobServiceClient.from_connection_string(conn).get_blob_client("contributions", blob_name).upload_blob(json.dumps(record))
+    return _json({"ok": True, "stored": True, "id": blob_name})
+
+
+# ---------- D4: Developer API (landmarks only, never video) ----------
+_sessions: dict[str, tuple[ort.InferenceSession, list[str]]] = {}
+
+
+def _model(lang: str):
+    if lang not in _sessions:
+        folder = Path(os.environ.get("SIGNBRIDGE_MODEL_DIR", Path(__file__).parent / "models"))
+        labels = json.loads((folder / f"{lang}.labels.json").read_text(encoding="utf-8"))["labels"]
+        _sessions[lang] = (ort.InferenceSession(str(folder / f"{lang}.onnx")), labels)
+    return _sessions[lang]
+
+
+@app.route(route="v1/recognize", methods=["POST"])
+def recognize(req: func.HttpRequest) -> func.HttpResponse:
+    """{lang, clip[30][177]} + header x-api-key -> {label, confidence}. Keys: env SIGNBRIDGE_API_KEYS (comma separated)."""
+    keys = {k.strip() for k in os.environ.get("SIGNBRIDGE_API_KEYS", "").split(",") if k.strip()}
+    if not keys or req.headers.get("x-api-key") not in keys:
+        return _json({"error": "invalid API key"}, 401)
+    try:
+        data = req.get_json()
+    except ValueError:
+        return _json({"error": "invalid JSON"}, 400)
+    lang, clip = data.get("lang"), data.get("clip")
+    if lang not in LANGS:
+        return _json({"error": "lang must be psl, sgsl or asl"}, 400)
+    if not (isinstance(clip, list) and len(clip) == 30 and all(isinstance(f, list) and len(f) == 177 for f in clip)):
+        return _json({"error": "clip must be 30 x 177 numbers"}, 400)
+    try:
+        session, labels = _model(lang)
+    except FileNotFoundError:
+        return _json({"error": f"no model deployed for {lang}"}, 503)
+    logits = session.run(["logits"], {"input": np.asarray([clip], dtype=np.float32)})[0][0]
+    probs = np.exp(logits - logits.max())
+    probs /= probs.sum()
+    best = int(probs.argmax())
+    logging.info("recognize lang=%s key=%s", lang, req.headers.get("x-api-key", "")[:4])  # usage metering
+    return _json({"label": labels[best], "confidence": round(float(probs[best]), 4)})

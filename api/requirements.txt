@@ -1,3 +1,6 @@
 azure-functions
 openai>=1.40
 requests>=2.31
+azure-storage-blob>=12.19
+onnxruntime>=1.18
+numpy>=1.26

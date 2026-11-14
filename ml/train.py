@@ -112,16 +112,18 @@ def main() -> None:
             if t != p and confusion[t, p] > 0:
                 print(f"  {labels[t]} -> {labels[p]}: {confusion[t, p]}")
 
-    out = ROOT / "web" / "public" / "models"
-    out.mkdir(parents=True, exist_ok=True)
-    torch.onnx.export(
-        model, torch.zeros(1, FRAMES, FEATURES), out / f"{args.lang}.onnx",
-        input_names=["input"], output_names=["logits"], opset_version=17,
-    )
-    (out / f"{args.lang}.labels.json").write_text(
-        json.dumps({"featureVersion": FEATURE_VERSION, "labels": labels}, indent=2), encoding="utf-8"
-    )
-    print(f"Saved {out / (args.lang + '.onnx')}  (best val acc {best:.2%})")
+    # web app (offline in browser) + api (developer API) get the same model
+    for out in (ROOT / "web" / "public" / "models", ROOT / "api" / "models"):
+        out.mkdir(parents=True, exist_ok=True)
+        torch.onnx.export(
+            model, torch.zeros(1, FRAMES, FEATURES), out / f"{args.lang}.onnx",
+            input_names=["input"], output_names=["logits"], opset_version=17,
+        )
+        (out / f"{args.lang}.labels.json").write_text(
+            json.dumps({"featureVersion": FEATURE_VERSION, "labels": labels}, indent=2), encoding="utf-8"
+        )
+        print(f"Saved {out / (args.lang + '.onnx')}")
+    print(f"Best val acc {best:.2%}")
 
 
 if __name__ == "__main__":

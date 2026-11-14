@@ -12,6 +12,8 @@
     "AZURE_SPEECH_KEY": "put-key-here-never-commit",
     "AZURE_SPEECH_REGION": "southeastasia",
     "AZURE_VISION_ENDPOINT": "https://YOUR-VISION.cognitiveservices.azure.com/",
-    "AZURE_VISION_KEY": "put-key-here-never-commit"
+    "AZURE_VISION_KEY": "put-key-here-never-commit",
+    "AZURE_STORAGE_CONNECTION_STRING": "put-connection-string-here-never-commit",
+    "SIGNBRIDGE_API_KEYS": "dev-key-1,dev-key-2"
   }
 }

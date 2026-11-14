@@ -37,7 +37,7 @@ Every feature must work offline (degraded) — see `docs/ARCHITECTURE.md`.
 
 ## C. Community & safety
 
-### C1. Contribute `/contribute` ✅ starter [Umaiza]
+### C1. Contribute `/contribute` ✅ [Umaiza] (API saves to Blob `contributions/<lang>/<label>/<id>.json` when AZURE_STORAGE_CONNECTION_STRING is set)
 - Pick sign → record 30-frame landmark clip (no video) → consent required → offline queue → `POST /api/contribute` when online.
 
 ### C2. Validate `/validate` ✅ local skeleton replay; Blob sync todo [Umaiza]
@@ -54,15 +54,21 @@ Every feature must work offline (degraded) — see `docs/ARCHITECTURE.md`.
 |---|---|---|---|
 | D1 | `/kiosk?org=Name&lang=psl` counter mode, auto-reset 60 s | Umaiza | ✅ |
 | D2 | `/org` dashboard: tiles, 7-day chart, CSV, print-to-PDF (local; Cosmos DB todo) | Umaiza | ✅ |
-| D3 | Microsoft Teams side-panel app (Teams Toolkit) | Saadia | ⬜ |
-| D4 | Developer API: keys, metering, `/api/v1/recognize` (landmarks only) | Saadia | ⬜ |
+| D3 | Microsoft Teams app: `teams/manifest.json` (tabs + meeting side panel), see teams/README.md | Saadia | ✅ needs deploy URL + icons |
+| D4 | `POST /api/v1/recognize` with `x-api-key` (SIGNBRIDGE_API_KEYS), server-side ONNX from api/models, logged for metering | Saadia | ✅ |
 | D5 | `/pricing` page (payments later, Stripe test mode) | Zakraya | ✅ |
 
 ## E. Platform
 | ID | Feature | Owner | Status |
 |---|---|---|---|
 | E1 | PWA: `public/sw.js` + manifest (production only) | Zakraya | ✅ |
-| E2 | Login (Microsoft Entra External ID) | Umaiza | ⬜ |
+| E2 | Login: Entra ID via Static Web Apps auth (`web/staticwebapp.config.json`), /org and /validate need sign-in, /login and /logout | Umaiza | ✅ on Azure only |
 | E3 | Azure deploy: `.github/workflows/azure-static-web-apps.yml` (needs secret) | Saadia | 🟡 |
-| E4 | Azure ML retraining pipeline | Umaiza | ⬜ |
+| E4 | Retraining: `ml/sync_contributions.py` downloads approved Blob clips → `train.py` (run locally or as an Azure ML job) | Umaiza | ✅ |
 | E5 | Responsible AI page `/about` | all | ✅ |
+
+## Still to do
+- Cloud validation: API to list pending Blob clips and mark approved (now /validate is per-device).
+- Org dashboard across devices (Cosmos DB) instead of this-device localStorage.
+- Stripe test-mode checkout on /pricing.
+- Record data, train 3 models, record sign videos, create Azure resources and deploy.
